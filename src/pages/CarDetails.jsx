@@ -159,7 +159,7 @@ const CarDetails = ({ car, onBack }) => {
         </div>
       </div>
 
-      {/* ÚJ LEÍRÁS KÁRTYA */}
+      {/* LEÍRÁS KÁRTYA */}
       <div
         style={{
           backgroundColor: 'white',
@@ -172,21 +172,13 @@ const CarDetails = ({ car, onBack }) => {
           Leírás
         </h3>
 
-        <div
-          style={{
-            lineHeight: '1.7',
-            color: '#374151',
-            fontSize: '15px',
-            overflow: 'hidden',
-            display: '-webkit-box',
-            WebkitLineClamp: expanded ? 'unset' : 5,
-            WebkitBoxOrient: 'vertical'
-          }}
-        >
-          {descriptionText}
+        <div style={{ lineHeight: '1.7', color: '#374151', fontSize: '15px', whiteSpace: 'pre-wrap' }}>
+          {expanded || descriptionText.length <= 150
+            ? descriptionText
+            : descriptionText.slice(0, 150) + '...'}
         </div>
 
-        {descriptionText.length > 20 && (
+        {descriptionText.length > 150 && (
           <button
             onClick={() => setExpanded(!expanded)}
             style={{

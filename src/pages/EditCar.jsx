@@ -6,7 +6,7 @@ const EditCar = ({ car, onSave, onCancel }) => {
   const [tempValue, setTempValue] = useState('');
   const [previewImg, setPreviewImg] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [savedField, setSavedField] = useState(null); // visszajelzéshez
+  const [savedField, setSavedField] = useState(null);
 
   useEffect(() => {
     setFormData(car);
@@ -30,7 +30,7 @@ const EditCar = ({ car, onSave, onCancel }) => {
 
       if (!res.ok) throw new Error('Hiba a mentéskor');
 
-      setSavedField(name); // zöld visszajelzés
+      setSavedField(name);
       setTimeout(() => setSavedField(null), 2000);
     } catch (err) {
       console.error('Mentési hiba:', err);
@@ -60,30 +60,46 @@ const EditCar = ({ car, onSave, onCancel }) => {
   const saveBtnStyle = { backgroundColor: '#10b981', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' };
   const cancelBtnStyle = { backgroundColor: '#ef4444', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' };
 
-  const EditableRow = ({ label, name, type = "text", isSelect = false, options = [] }) => {
+  const EditableRow = ({ label, name, type = "text", isSelect = false, options = [], multiline = false }) => {
     const isEditing = activeField === name;
     const justSaved = savedField === name;
 
     return (
-      <div style={{ ...rowStyle, backgroundColor: justSaved ? '#f0fdf4' : 'transparent', transition: 'background-color 0.3s', borderRadius: '8px' }}>
-        <div style={labelStyle}>{label}</div>
+      <div style={{
+        ...rowStyle,
+        alignItems: (multiline && isEditing) ? 'flex-start' : 'center',
+        backgroundColor: justSaved ? '#f0fdf4' : 'transparent',
+        transition: 'background-color 0.3s',
+        borderRadius: '8px'
+      }}>
+        <div style={{ ...labelStyle, paddingTop: (multiline && isEditing) ? '12px' : '0' }}>{label}</div>
+
         {isEditing ? (
           <>
             {isSelect ? (
               <select value={tempValue} onChange={(e) => setTempValue(e.target.value)} style={inputStyle}>
                 {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
               </select>
+            ) : multiline ? (
+              <textarea
+                value={tempValue}
+                onChange={(e) => setTempValue(e.target.value)}
+                style={{ ...inputStyle, resize: 'vertical', minHeight: '150px', lineHeight: '1.6', fontFamily: 'sans-serif' }}
+                autoFocus
+              />
             ) : (
               <input type={type} value={tempValue} onChange={(e) => setTempValue(e.target.value)} style={inputStyle} autoFocus />
             )}
-            <button onClick={() => saveField(name)} style={saveBtnStyle} disabled={saving}>
-              {saving ? '...' : 'Mentés'}
-            </button>
-            <button onClick={() => setActiveField(null)} style={cancelBtnStyle}>Mégse</button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingTop: multiline ? '12px' : '0' }}>
+              <button onClick={() => saveField(name)} style={saveBtnStyle} disabled={saving}>
+                {saving ? '...' : 'Mentés'}
+              </button>
+              <button onClick={() => setActiveField(null)} style={cancelBtnStyle}>Mégse</button>
+            </div>
           </>
         ) : (
           <>
-            <div style={valueStyle}>
+            <div style={{ ...valueStyle, whiteSpace: multiline ? 'pre-wrap' : 'normal' }}>
               {justSaved && <span style={{ color: '#10b981', fontSize: '12px', marginRight: '8px' }}>✓ Mentve</span>}
               {name === 'price' ? `${Number(formData[name]).toLocaleString()} Ft` : formData[name]}
             </div>
@@ -139,11 +155,11 @@ const EditCar = ({ car, onSave, onCancel }) => {
         <EditableRow label="Tömeg (kg)" name="tomeg" />
         <EditableRow label="Hajtás" name="hajtas" isSelect options={["Elsőkerék", "Hátsókerék", "Összkerék"]} />
         <EditableRow label="Teljesítmény (LE)" name="teljesitmeny" />
-        <EditableRow label="Leírás" name="description" />
+        <EditableRow label="Leírás" name="description" multiline />
 
         <div style={{ marginTop: '40px', borderTop: '2px solid #f3f4f6', paddingTop: '30px' }}>
           <button
-            onClick={onSave} // fetchCars() + visszanavigálás az App.jsx-ben
+            onClick={onSave}
             style={{ width: '100%', backgroundColor: '#111', color: 'white', padding: '15px', borderRadius: '15px', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}
           >
             Vissza az autók kezeléséhez (Kész vagyok)
