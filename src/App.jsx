@@ -158,7 +158,7 @@ function App() {
             />
           } />
 
-          <Route path="/details/:id" element={<CarDetails onBack={() => navigate('/home')} />} />
+          <Route path="/details/:id" element={<CarDetails onBack={() => navigate('/home')} onContact={() => navigate('/contact')} />} />
 
           <Route path="/admin" element={
             isAdmin

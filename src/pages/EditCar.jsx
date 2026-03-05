@@ -17,7 +17,7 @@ const EditCar = ({ onSave, onCancel }) => {
   useEffect(() => {
     const fetchCar = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/cars/${id}`);
+        const res = await fetch(`http://192.168.12.102:3000/api/cars/${id}`);
         const data = await res.json();
         setFormData(data);
         setImages(data.img ? data.img.split(SEP).filter(Boolean) : []);
@@ -36,7 +36,7 @@ const EditCar = ({ onSave, onCancel }) => {
     const updatedCar = { ...formData, img: imgString };
     setFormData(updatedCar);
     try {
-      await fetch(`http://localhost:3000/api/cars/${id}`, {
+      await fetch(`http://192.168.12.102:3000/api/cars/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedCar)
@@ -50,18 +50,27 @@ const EditCar = ({ onSave, onCancel }) => {
 
   const handleAddImages = (e) => {
     const files = Array.from(e.target.files);
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImages(prev => {
-          const updated = [...prev, reader.result];
-          saveImages(updated);
-          return updated;
-        });
-      };
-      reader.readAsDataURL(file);
-    });
     e.target.value = '';
+    setImages(prev => {
+      const remaining = 4 - prev.length;
+      if (remaining <= 0) { alert('Maximum 4 kép tölthető fel!'); return prev; }
+      const allowed = files.slice(0, remaining);
+      let newImages = [...prev];
+      let loaded = 0;
+      allowed.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          newImages = [...newImages, reader.result];
+          loaded++;
+          if (loaded === allowed.length) {
+            setImages(newImages);
+            saveImages(newImages);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+      return prev;
+    });
   };
 
   const handleDeleteImage = (index) => {
@@ -77,7 +86,7 @@ const EditCar = ({ onSave, onCancel }) => {
     setFormData(updatedCar);
     setSaving(true);
     try {
-      const res = await fetch(`http://localhost:3000/api/cars/${id}`, {
+      const res = await fetch(`http://192.168.12.102:3000/api/cars/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedCar)
@@ -117,7 +126,17 @@ const EditCar = ({ onSave, onCancel }) => {
                 {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
               </select>
             ) : multiline ? (
-              <textarea value={tempValue} onChange={(e) => setTempValue(e.target.value)} style={{ ...inputStyle, resize: 'vertical', minHeight: '150px', lineHeight: '1.6', fontFamily: 'sans-serif' }} autoFocus />
+              <textarea
+                value={tempValue}
+                onChange={(e) => setTempValue(e.target.value)}
+                style={{ ...inputStyle, resize: 'vertical', minHeight: '150px', lineHeight: '1.6', fontFamily: 'sans-serif' }}
+                ref={(el) => {
+                  if (el) {
+                    el.focus();
+                    el.setSelectionRange(el.value.length, el.value.length);
+                  }
+                }}
+              />
             ) : (
               <input type={type} value={tempValue} onChange={(e) => setTempValue(e.target.value)} style={inputStyle} autoFocus />
             )}
@@ -157,14 +176,16 @@ const EditCar = ({ onSave, onCancel }) => {
                   <button onClick={() => handleDeleteImage(i)} style={{ position: 'absolute', top: '4px', right: '4px', backgroundColor: 'rgba(0,0,0,0.6)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
                 </div>
               ))}
+              {images.length < 4 && (
               <label style={{ width: '100px', height: '70px', borderRadius: '10px', border: '2px dashed #d1d5db', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#9ca3af', flexDirection: 'column', gap: '2px' }}>
                 <span style={{ fontSize: '24px' }}>+</span>
                 <span style={{ fontSize: '10px', fontWeight: 'bold' }}>Hozzáadás</span>
                 <input type="file" multiple accept="image/*" onChange={handleAddImages} style={{ display: 'none' }} />
               </label>
+              )}
             </div>
             {imgSaving && <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 'bold' }}>⏳ Mentés...</div>}
-            <div style={{ fontSize: '12px', color: '#9ca3af' }}>Az első kép lesz a borítókép. Egyszerre több is feltölthető.</div>
+            <div style={{ fontSize: '12px', color: '#9ca3af' }}>Az első kép lesz a borítókép. Maximum 4 kép tölthető fel ({images.length}/4).</div>
           </div>
         </div>
 

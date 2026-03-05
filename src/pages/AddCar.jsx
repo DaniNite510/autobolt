@@ -23,12 +23,26 @@ const AddCar = ({ onSave, onCancel }) => {
 
   const handleAddImages = (e) => {
     const files = Array.from(e.target.files);
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onloadend = () => setImages(prev => [...prev, reader.result]);
-      reader.readAsDataURL(file);
-    });
     e.target.value = '';
+    setImages(prev => {
+      const remaining = 4 - prev.length;
+      if (remaining <= 0) { alert('Maximum 4 kép tölthető fel!'); return prev; }
+      const allowed = files.slice(0, remaining);
+      let newImages = [...prev];
+      let loaded = 0;
+      allowed.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          newImages = [...newImages, reader.result];
+          loaded++;
+          if (loaded === allowed.length) {
+            setImages(newImages);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+      return prev;
+    });
   };
 
   const handleDeleteImage = (index) => {
@@ -107,13 +121,15 @@ const AddCar = ({ onSave, onCancel }) => {
                 <button type="button" onClick={() => handleDeleteImage(i)} style={{ position: 'absolute', top: '4px', right: '4px', backgroundColor: 'rgba(0,0,0,0.6)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
               </div>
             ))}
+            {images.length < 4 && (
             <label style={{ width: '100px', height: '70px', borderRadius: '10px', border: '2px dashed #d1d5db', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#9ca3af', flexDirection: 'column', gap: '2px' }}>
               <span style={{ fontSize: '24px' }}>+</span>
               <span style={{ fontSize: '10px', fontWeight: 'bold' }}>Kép hozzáadása</span>
               <input type="file" multiple accept="image/*" onChange={handleAddImages} style={{ display: 'none' }} />
             </label>
+            )}
           </div>
-          <div style={{ fontSize: '12px', color: '#9ca3af' }}>Az első kép lesz a borítókép (piros keret). Egyszerre több is feltölthető.</div>
+          <div style={{ fontSize: '12px', color: '#9ca3af' }}>Az első kép lesz a borítókép. Maximum 4 kép tölthető fel ({images.length}/4).</div>
         </div>
 
         <label style={labelStyle}>Leírás</label>

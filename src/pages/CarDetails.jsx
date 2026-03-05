@@ -4,7 +4,7 @@ import { Calendar, Gauge, Fuel, Settings2, Zap, Navigation, Package, Weight } fr
 
 const SEP = '|||';
 
-const CarDetails = ({ onBack }) => {
+const CarDetails = ({ onBack, onContact }) => {
   const { id } = useParams();
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -86,7 +86,7 @@ const CarDetails = ({ onBack }) => {
         {/* BAL - GALÉRIA */}
         <div style={{ flex: 1.5, display: 'flex', gap: '12px' }}>
           {images.length > 1 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '80px', flexShrink: 0 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '80px', flexShrink: 0, justifyContent: 'center' }}>
               {images.map((img, i) => (
                 <img key={i} src={img} alt="" onClick={() => setActiveImg(i)}
                   style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '10px', cursor: 'pointer', border: activeImg === i ? '3px solid #E31E24' : '2px solid transparent', opacity: activeImg === i ? 1 : 0.6, transition: 'all 0.2s' }}
@@ -99,7 +99,7 @@ const CarDetails = ({ onBack }) => {
               src={images[activeImg] || ''}
               alt={car.make}
               onClick={() => setImgFullscreen(true)}
-              style={{ width: '100%', height: '500px', objectFit: 'cover', borderRadius: '20px', cursor: 'zoom-in', transition: 'opacity 0.2s' }}
+              style={{ width: '100%', height: '500px', objectFit: 'contain', borderRadius: '20px', cursor: 'zoom-in', transition: 'opacity 0.2s', backgroundColor: '#f3f4f6' }}
               onMouseEnter={e => e.target.style.opacity = '0.9'}
               onMouseLeave={e => e.target.style.opacity = '1'}
             />
@@ -121,7 +121,7 @@ const CarDetails = ({ onBack }) => {
             <div style={{ backgroundColor: '#f3f4f6', display: 'inline-block', padding: '5px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', marginBottom: '15px' }}>{car.status}</div>
             <h1 style={{ fontSize: '36px', fontWeight: '900', marginBottom: '5px', marginTop: '-15px' }}>{car.make}</h1>
             {car.subtitle && <div style={{ color: 'grey', fontSize: '15px', marginBottom: '15px' }}>{car.subtitle}</div>}
-            <div style={{ fontSize: '28px', color: '#E31E24', fontWeight: '900', marginBottom: '25px' }}>{Number(car.price).toLocaleString()} Ft</div>
+            <div style={{ fontSize: '28px', color: '#E31E24', fontWeight: '900', marginBottom: '25px' }}>{Number(car.price).toLocaleString('de-DE')} Ft</div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
               <StatBox icon={Calendar}   label="Évjárat"      value={car.year} />
@@ -135,7 +135,7 @@ const CarDetails = ({ onBack }) => {
             </div>
           </div>
 
-          <button style={{ width: '100%', backgroundColor: '#000', color: 'white', padding: '20px', borderRadius: '15px', border: 'none', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer', marginTop: '20px' }}>
+          <button onClick={onContact} style={{ width: '100%', backgroundColor: '#000', color: 'white', padding: '20px', borderRadius: '15px', border: 'none', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer', marginTop: '20px' }}>
             Érdeklődöm az autó iránt
           </button>
         </div>

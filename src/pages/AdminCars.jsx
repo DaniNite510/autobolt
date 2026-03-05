@@ -38,7 +38,7 @@ const AdminCars = ({ cars, deleteCar, onAddClick, onEditClick }) => {
                   <div style={{ fontWeight: 'bold' }}>{car.make}</div>
                   <div style={{ fontSize: '11px', color: '#9ca3af' }}>{car.status}</div>
                 </td>
-                <td style={{ ...tableDataStyle, fontWeight: 'bold' }}>{car.price.toLocaleString()} Ft</td>
+                <td style={{ ...tableDataStyle, fontWeight: 'bold' }}>{car.price.toLocaleString('de-DE')} Ft</td>
                 <td style={{ ...tableDataStyle, textAlign: 'right' }}>
                   <button 
                     onClick={() => onEditClick(car)}
