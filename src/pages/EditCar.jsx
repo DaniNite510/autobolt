@@ -55,8 +55,8 @@ const EditCar = ({ onSave }) => {
     setFormData(updatedCar);
     setSaving(true);
     try {
-      const res = await updateCar(id, updatedCar);
-      if (!res.ok) throw new Error();
+      const data = await updateCar(id, updatedCar);
+      if (data.message !== 'Sikeres módosítás') throw new Error();
       setSavedField(name);
       setTimeout(() => setSavedField(null), 2000);
     } catch {

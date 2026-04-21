@@ -1,6 +1,6 @@
 import React from 'react';
 import useResponsiveStyles from '../hooks/useResponsiveStyles';
-import { uploadImage, deleteImage } from '../api';
+import { uploadImage, deleteImage, BASE } from '../api';
 
 const ImageGallery = ({ images, onImagesChange, uploading = false, onUploadingChange = () => {} }) => {
   const { s } = useResponsiveStyles();
@@ -15,12 +15,14 @@ const ImageGallery = ({ images, onImagesChange, uploading = false, onUploadingCh
     const allowed = files.slice(0, remaining);
     onUploadingChange(true);
 
+    const newImages = [];
     for (const file of allowed) {
       const preview = URL.createObjectURL(file);
       try {
         const data = await uploadImage(file);
         if (data.success) {
-          onImagesChange([...images, { preview, url: data.url, filename: data.filename }]);
+          const url = `${BASE}/uploads/${data.filename}`;
+          newImages.push({ preview, url, filename: data.filename });
         } else {
           alert('Hiba a kép feltöltésekor!');
           URL.revokeObjectURL(preview);
@@ -31,6 +33,9 @@ const ImageGallery = ({ images, onImagesChange, uploading = false, onUploadingCh
       }
     }
 
+    if (newImages.length > 0) {
+      onImagesChange([...images, ...newImages]);
+    }
     onUploadingChange(false);
   };
 
@@ -77,7 +82,7 @@ const ImageGallery = ({ images, onImagesChange, uploading = false, onUploadingCh
         }}>
           {images.map((img, i) => (
             <div key={i} style={{ position: 'relative', borderRadius: '10px', overflow: 'hidden', aspectRatio: '4/3' }}>
-              <img src={img.preview || img} alt={`Kép ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover', border: i === 0 ? '3px solid #E31E24' : '2px solid #eee' }} />
+              <img src={img.preview || img.url || img} alt={`Kép ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover', border: i === 0 ? '3px solid #E31E24' : '2px solid #eee' }} />
               {i === 0 && <div style={{ position: 'absolute', top: '4px', left: '4px', backgroundColor: '#E31E24', color: 'white', fontSize: s('8px', '9px'), fontWeight: 'bold', padding: s('2px 4px', '2px 6px'), borderRadius: '4px' }}>FŐ</div>}
               <button onClick={() => handleDeleteImage(i)} style={{ position: 'absolute', top: s('2px', '4px'), right: s('2px', '4px'), backgroundColor: 'rgba(0,0,0,0.7)', color: 'white', border: 'none', borderRadius: '50%', width: btnSize, height: btnSize, cursor: 'pointer', fontSize: s('13px', '11px'), display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0, transition: 'background-color 0.2s' }} onMouseEnter={e => e.target.style.backgroundColor = 'rgba(0,0,0,0.9)'} onMouseLeave={e => e.target.style.backgroundColor = 'rgba(0,0,0,0.7)'}>✕</button>
             </div>

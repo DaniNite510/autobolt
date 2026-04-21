@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-export const BASE = 'https://nodejs313.dszcbaross.edu.hu';
-import { getImages, deleteImage } from '../api.js';
+import { getImages, deleteImage, BASE } from '../api.js';
 
 const ImagesPage = () => {
   const navigate = useNavigate();
@@ -18,7 +17,13 @@ const ImagesPage = () => {
   const kepekLekerese = async () => {
     try {
       const result = await getImages();
-      if (result.success) setImages(result.images);
+      if (result.success) {
+        const imagesWithUrl = result.images.map(img => ({
+          filename: img.filename,
+          url: `${BASE}/uploads/${img.filename}`
+        }));
+        setImages(imagesWithUrl);
+      }
     } catch (err) {
       console.error('Képek lekérési hiba:', err);
     } finally {

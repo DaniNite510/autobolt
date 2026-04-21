@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import useResponsiveStyles from '../hooks/useResponsiveStyles';
-import { uploadImage, deleteImage } from '../api';
+import { uploadImage, deleteImage, BASE } from '../api';
 
 const SEP = '|||';
 
@@ -32,12 +32,14 @@ const AddCar = ({ onSave, onCancel }) => {
     const allowed = files.slice(0, remaining);
     setUploading(true);
 
+    const newImages = [];
     for (const file of allowed) {
       const preview = URL.createObjectURL(file);
       try {
         const data = await uploadImage(file);
         if (data.success) {
-          setImages(prev => [...prev, { preview, url: data.url, filename: data.filename }]);
+          const url = `${BASE}/uploads/${data.filename}`;
+          newImages.push({ preview, url, filename: data.filename });
         } else {
           alert('Hiba a kép feltöltésekor!');
           URL.revokeObjectURL(preview);
@@ -48,6 +50,9 @@ const AddCar = ({ onSave, onCancel }) => {
       }
     }
 
+    if (newImages.length > 0) {
+      setImages(prev => [...prev, ...newImages]);
+    }
     setUploading(false);
   };
 
