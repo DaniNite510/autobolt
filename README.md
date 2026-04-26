@@ -24,14 +24,16 @@ Design
 Ez az alkalmazás főoldala, ahol a felhasználó kereshet, szűrhet és listában megtekintheti az autókat egy reszponzív rácsos elrendezésben, valamint innen érheti el az autók részleteit.
 | Fájlnév | Typus | Leyras |
 |:----------------|:----------------:|----------------:|
-| Tartalom | Tartalom | Tartalom |
+| useResponsiveStyles.js | JavaScript | Ez a hook a képernyőméret figyelésével segít egyszerűen kezelni a mobil, tablet és desktop nézetekhez tartozó stílusokat. |
+| CarFilter.jsx | JSX | Ez a car filter komponens egy egyszerűen használható szűrőfelület, amely lehetővé teszi, hogy kategória, név és ár alapján gyorsan megtalálják a számukra legmegfelelőbb autót. |
+| CarCard.jsx | JSX | Tartalom |
 
 ## Oldalak
 **Contact.html** 
 Ez egy reszponzív kapcsolatfelvételi oldal, amely megjeleníti az elérhetőségi adatokat ikonokkal kiegészítve, és asztali nézetben egy dekoratív autóképet is mutat.
 | Fájlnév | Typus | Leyras |
 |:----------------|:----------------:|----------------:|
-| Tartalom | Tartalom | Tartalom |
+| useWindowSize.js | JavaScript | Ez a hook folyamatosan figyeli az ablak szélességét, és mindig visszaadja az aktuális width értéket. |
 
 ## Oldalak
 **About.html** 
