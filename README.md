@@ -138,8 +138,9 @@ Ez egy admin bejelentkezési felület, amely email és jelszó alapján hiteles�
   - E-mail: a@a1.com
   - Jelszó: jelszo123
 </details>
+
 ---
-## Használt eszközök
+### Használt eszközök
 
 - **[VS Code](https://code.visualstudio.com/)**
 - **[NPM](https://www.npmjs.com/)**
