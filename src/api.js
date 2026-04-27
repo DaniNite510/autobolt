@@ -160,7 +160,7 @@ export const deleteUser = async (id) => {
   return res.json();
 };
 
-// ✅ ÚJ: Helper függvény - filename -> teljes URL
+
 export const getImageUrl = (filename) => {
   return `${BASE}/uploads/${filename}`;
 };
