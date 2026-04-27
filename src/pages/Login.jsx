@@ -28,7 +28,7 @@ const Login = ({ setIsLoginOpen, setIsAdmin }) => {
     }
   };
 
-  // ✅ Login form (nem bejelentkezve)
+  // Login form (nem bejelentkezve)
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.7)', backdropFilter: 'blur(8px)' }}>
       <div style={{ backgroundColor: 'white', width: '100%', maxWidth: '400px', padding: '40px', borderRadius: '24px', position: 'relative', border: '2px solid #000' }}>
