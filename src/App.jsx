@@ -26,7 +26,7 @@ function App() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // ✅ ÚJ: Oldal betöltéskor check az auth státuszt
+  // Betöltéskor ellenőrzi, hogy admin-e a user
   useEffect(() => {
     const checkAuth = async () => {
       try {
